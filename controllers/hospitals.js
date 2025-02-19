@@ -42,15 +42,33 @@ exports.createHospital = async (req,res,next) => {
 //@desc     Update single hospital
 //@route    PUT /api/v1/hospitals/:id
 //@access   Private
-exports.updateHospital = (req,res,next) => {
-    res.status(200).json({success:true, msg:`Update hospital ${req.params.id}`});
+exports.updateHospital = async (req,res,next) => {
+    try{
+        const hospital = await Hospital.findByIdAndUpdate(req.params.id, req.body,{
+            new:true,
+            runValidators:true
+        })
+
+        if(!hospital)
+            return res.status(400).json({success:false});
+        res.status(200).json({success:true, data: hospital});
+    }catch(err) {
+        res.status(400).json({success:false});
+    }
 }
 
 
 //@desc     Delete single hospital
 //@route    DELETE /api/v1/hospitals/:id
 //@access   Private
-exports.deleteHospital = (req,res,next) => {
-    res.status(200).json({success:true, msg:`Delete hospital ${req.params.id}`});
+exports.deleteHospital = async (req,res,next) => {
+    try{
+        const hospital = await Hospital.findByIdAndDelete(req.params.id);
+        if(!hospital)
+            res.status(400).json({success:false});
+        res.status(200).json({success:true, data:{}});
+    }catch(err) {
+        res.status(400).json({success:false});
+    }
 }
 
