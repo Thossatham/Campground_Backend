@@ -29,6 +29,6 @@ const HospitalSchema = new mongoose.Schema({
         type: String,
         required: [true,'Please add a tel']
     }
-});
+}, { collection: 'hospital' });
 
 module.exports=mongoose.model('Hospital',HospitalSchema);
