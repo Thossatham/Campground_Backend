@@ -79,6 +79,20 @@ exports.addAppointment = async (req,res,next) => {
             });
         }
 
+        console.log(req.body);
+
+        //add user Id to req.body
+        req.body.user=req.user.id;
+        //check for existed appointment
+        const existedAppointments = await Appointment.find({user:req.user.id});
+        //If the user is not an admin, they can only create 3 appointment.
+        if(existedAppointments.length >= 3 && req.user.rold !== 'admin') {
+            return res.status(400).json({
+                success:false,
+                message:`The user with ID ${req.user.id} has already made 3 appointments`
+            });
+        }
+
         const appointment = await Appointment.create(req.body);
 
         res.status(200).json({
@@ -106,6 +120,13 @@ exports.updateAppointment = async (req,res,next) => {
             return res.status(404).json({
                 success: false,
                 message: `No appointment with the id of ${req.params.id}`
+            });
+        }
+
+        //Make sure user is the appointment owner
+        if(appointment.user.toString()!==req.user.id && req.user.role !== 'admin') {
+            return res.status(401).json({
+                success:false,message:`User ${req.user.id} is not authorized to update this appointment`
             });
         }
 
@@ -140,6 +161,13 @@ exports.deleteAppointment = async (req,res,next) => {
             return res.status(404).json({
                 success: false,
                 message: `No appointment with the id of ${req.params.id}`
+            });
+        }
+
+        //Make sure user is the appointment owner
+        if(appointment.user.toString()!==req.user.id && req.user.role !== 'admin') {
+            return res.status(401).json({
+                    success:false,message:`User ${req.user.id} is not authorized to delete this appointment`
             });
         }
 
