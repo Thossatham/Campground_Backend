@@ -128,3 +128,33 @@ exports.updateAppointment = async (req,res,next) => {
         });
     }
 };
+
+//@desc     Delete appointment
+//@route    DELETE /api/v1/appointments/:id
+//@access   Private
+exports.deleteAppointment = async (req,res,next) => {
+    try {
+        const appointment = await Appointment.findById(req.params.id);
+
+        if(!appointment) {
+            return res.status(404).json({
+                success: false,
+                message: `No appointment with the id of ${req.params.id}`
+            });
+        }
+
+        await appointment.deleteOne();
+
+        res.status(200).json({
+            success:true,
+            data: {}
+        });
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            success:false,
+            message:"Cannot delete Appointment"
+        });
+    }
+};
