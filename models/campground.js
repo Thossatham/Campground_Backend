@@ -1,6 +1,6 @@
 const mongoose = require('mongoose'); // Add this line at the top
 
-const HospitalSchema = new mongoose.Schema({
+const CampgroundSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please add a name'],
@@ -8,39 +8,38 @@ const HospitalSchema = new mongoose.Schema({
         trim: true,
         maxlength:[50,'Name can not be more than 50 characters']
     },
-    address:{
+    address: {
         type: String,
-        required: [true,'Please add an address']
+        required: [true, 'Please add an address']
     },
-    district:{
+    district: {
         type: String,
-        required: [true,'Please add a district']
+        required: [true, 'Please add a district']
     },
-    province:{
+    province: {
         type: String,
         required: [true, 'Please add a province']
     },
-    postalcode:{
+    postalcode: {
         type: String,
         required: [true, 'Please add a postalcode'],
         maxlength: [5, 'Postal Code can not be more than 5 digits']
     },
-    tel:{
+    tel: {
         type: String,
-        required: [true,'Please add a tel']
+        required: [true, 'Please add a tel']
     }
 }, {
-    toJSON: {virtuals:true},
-    toObject: {virtuals:true}
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
-//Reverse populate with virtuals
-HospitalSchema.virtual('appointments', {
+// Reverse populate with virtuals
+CampgroundSchema.virtual('appointments', {
     ref: 'Appointment',
     localField: '_id',
-    foreignField: 'hospital',
+    foreignField: 'campground', // Ensure the foreignField is 'campground', not 'Campground'
     justOne: false
 });
 
-module.exports=mongoose.model('Hospital',HospitalSchema);
-// module.exports=mongoose.model('Hospital',HospitalSchema ,'hospital');
+module.exports = mongoose.model('Campground', CampgroundSchema);
