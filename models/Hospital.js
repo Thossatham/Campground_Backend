@@ -33,7 +33,6 @@ const HospitalSchema = new mongoose.Schema({
     toJSON: {virtuals:true},
     toObject: {virtuals:true}
 });
-//}, { collection: 'hospital' });
 
 //Reverse populate with virtuals
 HospitalSchema.virtual('appointments', {
@@ -44,3 +43,4 @@ HospitalSchema.virtual('appointments', {
 });
 
 module.exports=mongoose.model('Hospital',HospitalSchema);
+// module.exports=mongoose.model('Hospital',HospitalSchema ,'hospital');

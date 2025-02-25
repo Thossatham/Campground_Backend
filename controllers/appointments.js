@@ -5,25 +5,75 @@ const Hospital = require('../models/Hospital');
 //@desc     Get all appointments
 //@route    GET /api/v1/appointments
 //@access   Public
-exports.getAppointments = async (req,res,next) => {
+// exports.getAppointments = async (req,res,next) => {
+//     let query;
+//     //General users can see only their appointments!!!
+//     if(req.user.role !== 'admin') {
+//         query = Appointment.find({user:req.user.id}).populate({
+//             path: 'hospital',
+//             select: 'name province tel'
+//         });
+//     } else { 
+        
+//         if(req.params.hospitalId) {
+//             console.log(req.params.hospitalId);
+//             query = Appointment.find({hospital:req.params.hospitalId}).populate({
+//                 path: 'hospital',
+//                 select: 'name province tel'
+//             });
+//         } else {
+//             //If you are an admin, you can see all!!!
+//             query = Appointment.find().populate({
+//                 path: 'hospital',
+//                 select: 'name province tel'
+//             });
+//         }
+//     }
+//     try {
+//         const appointments = await query;
+
+//         res.status(200).json({
+//             sucess: true,
+//             count: appointments.length,
+//             data: appointments
+//         });
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Cannot find Appointment"
+//         });
+//     }
+// };
+exports.getAppointments = async (req, res, next) => {
     let query;
-    //General users can see only their appointments!!!
-    if(req.user.role !== 'admin') {
-        query = Appointment.find({user:req.user.id}).populate({
-            path: 'hospital',
-            select: 'name province tel'
-        });
-    } else { //If you are an admin, you can see all!!!
-        query = Appointment.find().populate({
-            path: 'hospital',
-            select: 'name province tel'
-        });
+    
+    // Start with basic query
+    if(req.params.hospitalId) {
+        // If hospital ID is provided, filter by hospital first
+        query = Appointment.find({hospital: req.params.hospitalId});
+    } else {
+        // No hospital ID provided, get all appointments
+        query = Appointment.find();
     }
+    
+    // Then apply user filtering if not admin
+    if(req.user.role !== 'admin') {
+        // Refine the query to also filter by user
+        query = query.find({user: req.user.id});
+    }
+    
+    // Add population regardless of filters
+    query = query.populate({
+        path: 'hospital',
+        select: 'name province tel'
+    });
+    
     try {
         const appointments = await query;
-
+        
         res.status(200).json({
-            sucess: true,
+            sucess: true,  // Note: There's a typo here - should be "success"
             count: appointments.length,
             data: appointments
         });
@@ -86,7 +136,7 @@ exports.addAppointment = async (req,res,next) => {
         //check for existed appointment
         const existedAppointments = await Appointment.find({user:req.user.id});
         //If the user is not an admin, they can only create 3 appointment.
-        if(existedAppointments.length >= 3 && req.user.rold !== 'admin') {
+        if(existedAppointments.length >= 3 && req.user.role !== 'admin') {
             return res.status(400).json({
                 success:false,
                 message:`The user with ID ${req.user.id} has already made 3 appointments`
