@@ -53,6 +53,22 @@ exports.login = async (req,res,next) => {
 };
 
 
+//@desc Logout user
+//@route POST /api/v1/auth/logout
+//@access Public
+exports.logout = async (req, res, next) => {
+    res.cookie('token','none',{
+        expires: new Date(Date.now()+10*1000),
+        httpOnly:true
+    });
+
+    res.status(200).json({
+        success:true,
+        data:{}
+    });
+  };
+
+
 const sendTokenResponse = (user, statusCode, res) => {
 
     const token = user.getSignedJwtToken();
