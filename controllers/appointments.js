@@ -192,7 +192,6 @@ exports.addAppointment = async (req, res, next) => {
 //     }
 // };
 
-
 //@desc     Update appointment
 //@route    PUT /api/v1/appointments/:id
 //@access   Private
