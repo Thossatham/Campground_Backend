@@ -78,7 +78,7 @@ exports.promote = async (req,res,next) => {
         //sent success
         res.status(200).json({
             success: true,
-            message: `Now this user id ${req.params.id} is admin`
+            message: `update role of this user id ${req.params.id}.`
         });
         
     }catch(error){
