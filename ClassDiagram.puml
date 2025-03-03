@@ -1,0 +1,119 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' Title
+title Camping Reservation System Class Diagram
+
+' Background (not directly supported in PlantUML, but we can focus on the structure)
+
+' User Model
+class User {
+  - name: String
+  - email: String
+  - password: String
+  - role: String
+  - telephone: String
+  + getSignedJwtToken()
+  + matchPassword()
+}
+
+' Campground Model
+class Campground {
+  - name: String
+  - description: String
+  - province: String
+  - tel: String
+  - createAt: Date
+}
+
+' Appointment Model
+class Appointment {
+  - apptDate: Date
+  - user: User
+  - campground: Campground
+  - createdAt: Date
+  - status: String
+  - nights: Number
+  - checkInDate: Date
+  - checkOutDate: Date
+}
+
+' Relationships
+User "1" --> "0..*" Appointment
+Campground "1" --> "0..*" Appointment
+
+' AuthController
+class AuthController {
+  + register()
+  + login()
+  + logout()
+  + getMe()
+  + deleteUser()
+}
+
+' CampgroundController
+class CampgroundController {
+  + getCampgrounds()
+  + getCampground()
+  + createCampground()
+  + updateCampground()
+  + deleteCampground()
+}
+
+' AppointmentController
+class AppointmentController {
+  + getAppointments()
+  + getAppointment()
+  + addAppointment()
+  + updateAppointment()
+  + deleteAppointment()
+}
+
+' AuthRoutes
+class AuthRoutes {
+  + POST /register
+  + POST /login
+  + POST /logout
+  + GET /me
+}
+
+' CampgroundRoutes
+class CampgroundRoutes {
+  + GET /
+  + POST /
+  + GET /:id
+  + PUT /:id
+  + DELETE /:id
+}
+
+' AppointmentRoutes
+class AppointmentRoutes {
+  + GET /
+  + POST /
+  + GET /:id
+  + PUT /:id
+  + DELETE /:id
+}
+
+' Auth Middleware
+class AuthMiddleware {
+  + protect()
+  + authorize()
+}
+
+' Relationships between Controllers and Models
+AuthController --> User
+CampgroundController --> Campground
+AppointmentController --> Appointment
+
+' Relationships between Controllers and Routes
+AuthController --> AuthRoutes
+CampgroundController --> CampgroundRoutes
+AppointmentController --> AppointmentRoutes
+
+' Middleware connections
+AuthMiddleware --> AuthRoutes
+AuthMiddleware --> CampgroundRoutes
+AuthMiddleware --> AppointmentRoutes
+
+@enduml

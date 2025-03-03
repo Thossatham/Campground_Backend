@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const Appointment = require('../models/Appointment');
 
 //@desc     Register user
 //@route    POST /api/v1/auth/register
@@ -69,6 +70,48 @@ exports.logout = async (req, res, next) => {
     });
 };
 
+
+
+//@desc Delete user
+//@route DELETE /api/v1/auth/delete
+//@access Private
+exports.deleteUser = async (req, res, next) => {
+    try {
+        // Find user by ID (from authenticated request)
+        const user = await User.findById(req.user.id);
+        
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+        
+        // Delete any appointments associated with this user
+        await Appointment.deleteMany({ user: req.user.id });
+        
+        // Delete the user
+        await User.findByIdAndDelete(req.user.id);
+        
+        // Clear the authentication cookie
+        res.cookie('token', 'none', {
+            expires: new Date(Date.now() + 10 * 1000),
+            httpOnly: true
+        });
+        
+        res.status(200).json({
+            success: true,
+            data: {},
+            message: 'User successfully deleted'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting user'
+        });
+    }
+};
 
 
 
