@@ -1,0 +1,45 @@
+@startuml
+
+actor User
+actor Admin
+
+rectangle "Authentication" {
+    usecase "Register" as Register
+    usecase "Login" as Login
+    usecase "Logout" as Logout
+    usecase "Reset Password" as ResetPassword
+}
+
+rectangle "Appointment Management" {
+    usecase "Book Appointment" as BookAppointment
+    usecase "View Appointment" as ViewAppointment
+    usecase "Update Appointment" as UpdateAppointment
+    usecase "Cancel Appointment" as CancelAppointment
+}
+
+rectangle "Campground Management" {
+    usecase "View Campgrounds" as ViewCampgrounds
+    usecase "Create Campground" as CreateCampground
+    usecase "Edit Campground" as EditCampground
+    usecase "Delete Campground" as DeleteCampground
+}
+
+User --> Register
+User --> Login
+User --> Logout
+User --> ResetPassword
+
+User --> BookAppointment
+User --> ViewAppointment
+User --> CancelAppointment
+User --> ViewCampgrounds
+
+Admin --> CreateCampground
+Admin --> EditCampground
+Admin --> DeleteCampground
+Admin --> ViewCampgrounds
+
+Admin --> UpdateAppointment
+Admin --> CancelAppointment
+
+Login <|-- ResetPassword
