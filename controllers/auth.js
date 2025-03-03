@@ -60,17 +60,22 @@ exports.login = async (req,res,next) => {
 exports.promote = async (req,res,next) => {
 
     try{
+        //Find by id and update by body.role default is admin
         const user = await User.findByIdAndUpdate(
             req.params.id,
             { role: req.body.role || 'admin' },
             { new: true, runValidators: true }
-          );
-          if (!user) {
+        );
+
+        //cant find user
+        if (!user) {
             return res.status(404).json({
               success: false,
               message: 'User not found',
             });
-          }
+        }
+
+        //sent success
         res.status(200).json({
             success: true,
             message: `Now this user id ${req.params.id} is admin`
