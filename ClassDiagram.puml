@@ -1,119 +1,92 @@
 @startuml
-skinparam classAttributeIconSize 0
+left to right direction
 
-' Title
-title Camping Reservation System Class Diagram
+' Application Service
+class "<<Application>>\nBookingCampGroundService" as BookingCampGroundService {}
 
-' Background (not directly supported in PlantUML, but we can focus on the structure)
-
-' User Model
-class User {
-  - name: String
-  - email: String
-  - password: String
-  - role: String
-  - telephone: String
-  + getSignedJwtToken()
-  + matchPassword()
+' Users Resources
+class "<<Resource>>\nUsers" as ResourceUsers {
+    <<GET>> +getUsers(): User
+    <<POST>> +createUser(): User
 }
 
-' Campground Model
-class Campground {
-  - name: String
-  - description: String
-  - province: String
-  - tel: String
-  - createAt: Date
+class "<<Resource>>\nUser" as ResourceUser {
+    <<GET>> +getUser(): User
+    <<PUT>> +updateUser(): User
+    <<DELETE>> +deleteUser(): void
 }
 
-' Appointment Model
-class Appointment {
-  - apptDate: Date
-  - user: User
-  - campground: Campground
-  - createdAt: Date
-  - status: String
-  - nights: Number
-  - checkInDate: Date
-  - checkOutDate: Date
+class "<<Representation>>\nUser" as RepresentationUser {
+    - name: String
+    - email: String
+    - telephone: String
+    - role: String <<enum>> {user, admin}
+    - createdAt: Date
 }
 
-' Relationships
-User "1" --> "0..*" Appointment
-Campground "1" --> "0..*" Appointment
+note right of RepresentationUser
+  Both regular users and admins
+  are represented by this class.
+  Admin-specific privileges are enforced
+  via role-based authorization.
+end note
 
-' AuthController
-class AuthController {
-  + register()
-  + login()
-  + logout()
-  + getMe()
-  + deleteUser()
+' Appointments Resources
+class "<<Resource>>\nAppointments" as ResourceAppointments {
+    <<GET>> +getAppointments(): Appointment
+    <<POST>> +createAppointment(): Appointment
 }
 
-' CampgroundController
-class CampgroundController {
-  + getCampgrounds()
-  + getCampground()
-  + createCampground()
-  + updateCampground()
-  + deleteCampground()
+class "<<Resource>>\nAppointment" as ResourceAppointment {
+    <<GET>> +getAppointment(): Appointment
+    <<PUT>> +updateAppointment(): Appointment
+    <<DELETE>> +deleteAppointment(): void
 }
 
-' AppointmentController
-class AppointmentController {
-  + getAppointments()
-  + getAppointment()
-  + addAppointment()
-  + updateAppointment()
-  + deleteAppointment()
+class "<<Representation>>\nAppointment" as RepresentationAppointment {
+    - apptDate: Date
+    - user: User
+    - campground: Campground
+    - createdAt: Date
 }
 
-' AuthRoutes
-class AuthRoutes {
-  + POST /register
-  + POST /login
-  + POST /logout
-  + GET /me
+' Campgrounds Resources
+class "<<Resource>>\nCampgrounds" as ResourceCampgrounds {
+    <<GET>> +getCampgrounds(): Campground
+    <<POST>> +createCampground(): Campground
 }
 
-' CampgroundRoutes
-class CampgroundRoutes {
-  + GET /
-  + POST /
-  + GET /:id
-  + PUT /:id
-  + DELETE /:id
+class "<<Resource>>\nCampground" as ResourceCampground {
+    <<GET>> +getCampground(): Campground
+    <<PUT>> +updateCampground(): Campground
+    <<DELETE>> +deleteCampground(): void
 }
 
-' AppointmentRoutes
-class AppointmentRoutes {
-  + GET /
-  + POST /
-  + GET /:id
-  + PUT /:id
-  + DELETE /:id
+class "<<Representation>>\nCampground" as RepresentationCampground {
+    - name: String
+    - address: String
+    - district: String
+    - province: String
+    - postalcode: String
+    - telephone: String
 }
 
-' Auth Middleware
-class AuthMiddleware {
-  + protect()
-  + authorize()
-}
+' Resource path relationships
+BookingCampGroundService ..> ResourceUsers : "/users\n<<Path>>"
+ResourceUsers ..> ResourceUser : "/{userId}\n<<Path>>"
+ResourceUser ..> RepresentationUser : "<<use>>"
 
-' Relationships between Controllers and Models
-AuthController --> User
-CampgroundController --> Campground
-AppointmentController --> Appointment
+BookingCampGroundService ..> ResourceAppointments : "/appointments\n<<Path>>"
+ResourceAppointments ..> ResourceAppointment : "/{appointmentId}\n<<Path>>"
+ResourceAppointment ..> RepresentationAppointment : "<<use>>"
 
-' Relationships between Controllers and Routes
-AuthController --> AuthRoutes
-CampgroundController --> CampgroundRoutes
-AppointmentController --> AppointmentRoutes
+BookingCampGroundService ..> ResourceCampgrounds : "/campgrounds\n<<Path>>"
+ResourceCampgrounds ..> ResourceCampground : "/{campgroundId}\n<<Path>>"
+ResourceCampground ..> RepresentationCampground : "<<use>>"
 
-' Middleware connections
-AuthMiddleware --> AuthRoutes
-AuthMiddleware --> CampgroundRoutes
-AuthMiddleware --> AppointmentRoutes
+' Relationships between representations (models)
+RepresentationUser "1" -- "0..3" RepresentationAppointment : "books up to 3"
+RepresentationAppointment "1" -- "1" RepresentationCampground : "belongs to"
+RepresentationCampground "1" -- "0..*" RepresentationAppointment : "has many"
 
 @enduml
