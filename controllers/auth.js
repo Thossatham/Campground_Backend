@@ -53,6 +53,39 @@ exports.login = async (req,res,next) => {
     sendTokenResponse(user,200,res);
 };
 
+//@desc     Login user user
+//@route    PUT /api/v1/auth/promote
+//@access   Public
+exports.promote = async (req,res,next) => {
+
+    try{
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { role: req.body.role || 'admin' },
+            { new: true, runValidators: true }
+          );
+          if (!user) {
+            return res.status(404).json({
+              success: false,
+              message: 'User not found',
+            });
+          }
+        res.status(200).json({
+            success: true,
+            message: `Now this user id ${req.params.id} is admin`
+        });
+        
+    }catch(error){
+        console.log(error)
+
+        res.status(400).json({
+            success: false,
+            message: `Cant promote this user id ${req.params.id}`
+        });
+        next(error);
+    }
+};
+
 
 //@desc Logout user
 //@route POST /api/v1/auth/logout
