@@ -1,0 +1,38 @@
+@startuml "Campground Managing System"
+
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor AliceBlue
+  BorderColor DarkSlateBlue
+  ArrowColor Navy
+}
+
+actor "User" as User
+actor "Admin" as Admin
+
+rectangle "Campground Managing System" {
+  usecase "Get All Campground" as UC5
+  usecase "Get Single Campground" as UC6
+  usecase "Create New Campground" as UC7
+  usecase "Update Single Campground" as UC8
+  usecase "Delete Single Campground" as UC9
+
+  ' Arrange use cases vertically
+  UC5 -[hidden]down-> UC6
+  UC6 -[hidden]down-> UC7
+  UC7 -[hidden]down-> UC8
+  UC8 -[hidden]down-> UC9
+}
+
+' Connect User to use cases
+User --> UC5
+User -left-> UC6
+
+' Connect Admin to use cases
+Admin -left-> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+
+@enduml

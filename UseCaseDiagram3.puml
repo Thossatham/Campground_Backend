@@ -1,0 +1,53 @@
+@startuml "Campground Booking System"
+
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor AliceBlue
+  BorderColor DarkSlateBlue
+  ArrowColor Navy
+}
+
+actor "User" as User
+actor "Admin" as Admin
+
+rectangle "Appointment managing System" {
+  usecase "Get All Appointments" as UC10
+  usecase "Get Own Appointments" as UC11
+  usecase "Get Appointment For Campground" as UC12
+  usecase "Get One Own Appointment" as UC13
+  usecase "Get Any Appointment" as UC14
+  usecase "Add Own Appointment" as UC15
+  usecase "Add Any Appointment" as UC16
+  usecase "Update Own Appointment" as UC17
+  usecase "Update Any Appointment" as UC18
+  usecase "Delete Own Appointment" as UC19
+  usecase "Delete Ony Appointment" as UC20
+  ' Arrange use cases vertically
+  UC10 -[hidden]left-> UC11
+  UC10 -[hidden]down-> UC12
+  UC12 -[hidden]down-> UC13
+  UC13 -[hidden]right-> UC14
+  UC13 -[hidden]down-> UC15
+  UC15 -[hidden]right-> UC16
+  UC15 -[hidden]down-> UC17
+  UC17 -[hidden]right-> UC18
+  UC17 -[hidden]down-> UC19
+  UC19 -[hidden]right-> UC20
+}
+
+' Connect User to use cases
+User --> UC11
+User --> UC13
+User --> UC15
+User --> UC17
+User -left-> UC19
+
+' Connect Admin to use cases
+Admin --> UC10
+Admin --> UC12
+Admin --> UC14
+Admin --> UC16
+Admin -left-> UC18
+Admin --> UC20
+
+@enduml
