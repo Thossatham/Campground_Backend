@@ -1,19 +1,14 @@
 @startuml
 left to right direction
-
 ' Application Service
 class "<<Application>>\nBookingCampGroundService" as BookingCampGroundService {}
 
 ' Users Resources
 class "<<Resource>>\nUsers" as ResourceUsers {
-    <<GET>> +getUsers(): User
-    <<POST>> +createUser(): User
-}
-
-class "<<Resource>>\nUser" as ResourceUser {
-    <<GET>> +getUser(): User
-    <<PUT>> +updateUser(): User
-    <<DELETE>> +deleteUser(): void
+    <<POST>> +register()
+    <<POST>> +login()
+    <<GET>> +getme()
+    <<POST>> +logout()
 }
 
 class "<<Representation>>\nUser" as RepresentationUser {
@@ -25,22 +20,20 @@ class "<<Representation>>\nUser" as RepresentationUser {
 }
 
 note right of RepresentationUser
-  Both regular users and admins
-  are represented by this class.
-  Admin-specific privileges are enforced
-  via role-based authorization.
+ User can only view/edit/delete own Appointments
+ Admin can view/edit/delete every Appoin
 end note
 
 ' Appointments Resources
 class "<<Resource>>\nAppointments" as ResourceAppointments {
-    <<GET>> +getAppointments(): Appointment
-    <<POST>> +createAppointment(): Appointment
+    <<GET>> +getAllAppointments()
+    <<POST>> +createAppointment()
 }
 
 class "<<Resource>>\nAppointment" as ResourceAppointment {
-    <<GET>> +getAppointment(): Appointment
-    <<PUT>> +updateAppointment(): Appointment
-    <<DELETE>> +deleteAppointment(): void
+    <<GET>> +getOneAppointment()
+    <<PUT>> +updateAppointment()
+    <<DELETE>> +deleteAppointment()
 }
 
 class "<<Representation>>\nAppointment" as RepresentationAppointment {
@@ -52,14 +45,14 @@ class "<<Representation>>\nAppointment" as RepresentationAppointment {
 
 ' Campgrounds Resources
 class "<<Resource>>\nCampgrounds" as ResourceCampgrounds {
-    <<GET>> +getCampgrounds(): Campground
-    <<POST>> +createCampground(): Campground
+    <<GET>> +getAllCampgrounds()
+    <<POST>> +createCampground()
 }
 
 class "<<Resource>>\nCampground" as ResourceCampground {
-    <<GET>> +getCampground(): Campground
-    <<PUT>> +updateCampground(): Campground
-    <<DELETE>> +deleteCampground(): void
+    <<GET>> +getOneCampground()
+    <<PUT>> +updateCampground()
+    <<DELETE>> +deleteCampground()
 }
 
 class "<<Representation>>\nCampground" as RepresentationCampground {
@@ -72,16 +65,15 @@ class "<<Representation>>\nCampground" as RepresentationCampground {
 }
 
 ' Resource path relationships
-BookingCampGroundService ..> ResourceUsers : "/users\n<<Path>>"
-ResourceUsers ..> ResourceUser : "/{userId}\n<<Path>>"
-ResourceUser ..> RepresentationUser : "<<use>>"
+BookingCampGroundService ..> ResourceUsers : "/auth\n<<Path>>"
+ResourceUsers ..>  RepresentationUser : "<<use>>"
 
 BookingCampGroundService ..> ResourceAppointments : "/appointments\n<<Path>>"
-ResourceAppointments ..> ResourceAppointment : "/{appointmentId}\n<<Path>>"
+ResourceAppointments ..> ResourceAppointment : "/:id\n<<Path>>"
 ResourceAppointment ..> RepresentationAppointment : "<<use>>"
 
 BookingCampGroundService ..> ResourceCampgrounds : "/campgrounds\n<<Path>>"
-ResourceCampgrounds ..> ResourceCampground : "/{campgroundId}\n<<Path>>"
+ResourceCampgrounds ..> ResourceCampground : "/:id\n<<Path>>"
 ResourceCampground ..> RepresentationCampground : "<<use>>"
 
 ' Relationships between representations (models)

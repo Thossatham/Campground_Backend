@@ -1,13 +1,12 @@
 @startuml
+left to right direction
 
-actor User
-actor Admin
+actor User||actor Admin
 
 rectangle "Authentication" {
     usecase "Register" as Register
     usecase "Login" as Login
     usecase "Logout" as Logout
-    usecase "Reset Password" as ResetPassword
 }
 
 rectangle "Appointment Management" {
@@ -27,7 +26,6 @@ rectangle "Campground Management" {
 User --> Register
 User --> Login
 User --> Logout
-User --> ResetPassword
 
 User --> BookAppointment
 User --> ViewAppointment
@@ -41,5 +39,6 @@ Admin --> ViewCampgrounds
 
 Admin --> UpdateAppointment
 Admin --> CancelAppointment
+Admin --> ViewAppointment
 
-Login <|-- ResetPassword
+@enduml
