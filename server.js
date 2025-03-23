@@ -34,7 +34,7 @@ app.use(rateLimit({
     max:10000
 }))
 app.use(hpp());
-app.use(cors());
+// app.use(cors());
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000;
