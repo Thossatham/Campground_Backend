@@ -18,14 +18,8 @@ app.use(express.json());
 // CORS configuration
 const allowedOrigins = ["http://localhost:3000"];
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
+    origin: '*',  // Allow all origins for testing
+  };
 app.use(cors(corsOptions));  // CORS middleware should be above routes
 
 // Security and sanitization middlewares
