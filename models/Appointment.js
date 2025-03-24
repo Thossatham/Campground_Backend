@@ -33,6 +33,14 @@ const AppointmentSchema = new mongoose.Schema({
     refcreateAt: {
         type: Date,
         default: Date.now
+    },
+    nameLastname: {
+        type: string,
+        required: true
+    },
+    tel: {
+        type: string,
+        required: true
     }
 });
 
