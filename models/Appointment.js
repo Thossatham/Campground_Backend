@@ -35,11 +35,11 @@ const AppointmentSchema = new mongoose.Schema({
         default: Date.now
     },
     nameLastname: {
-        type: string,
+        type: String,
         required: true
     },
     tel: {
-        type: string,
+        type: String,
         required: true
     }
 });
