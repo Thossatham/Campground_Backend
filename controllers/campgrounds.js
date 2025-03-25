@@ -87,6 +87,11 @@ exports.getCampground = async (req, res, next) => {
 //@route    POST /api/v1/campgrounds
 //@access   Private
 exports.createCampground = async (req, res, next) => {
+    // Transform the picture URL to replace &amp; with &
+    if (req.body.picture) {
+        req.body.picture = req.body.picture.replace(/&amp;/g, '&');
+    }
+
     const campground = await Campground.create(req.body);
     res.status(201).json({ success: true, data: campground });
 };
@@ -96,6 +101,11 @@ exports.createCampground = async (req, res, next) => {
 //@access   Private
 exports.updateCampground = async (req, res, next) => {
     try {
+        // Transform the picture URL to replace &amp; with &
+        if (req.body.picture) {
+            req.body.picture = req.body.picture.replace(/&amp;/g, '&');
+        }
+
         const campground = await Campground.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
